@@ -21,8 +21,31 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Once you have finished cleaning your data, figure out the course with the highest enrollment. And figure out how many students are enrolled in Gov 50. If you get a number much lower than 151, you have done something wrong . . .
 
+```{r}
 
+en_fall_2020_raw <- read_excel("raw_data/class_enrollment_summary_by_term_9-17-2020.xlsx", skip = 3, col_names = TRUE)
 
+en_fall_2020 <- en_fall_2020_raw %>% 
+  clean_names() %>%
+  select(-"course_section_code", -"instructor_full_name", -"grad", -"non_degree", -"x_reg", -"vus", -"employee", -"withdraw", -"total") %>%
+  filter(u_grad >= 10) %>%
+  drop_na()
+
+q1 <- en_fall_2020 %>%
+  arrange(desc(u_grad))
+
+#ECON 10A (Principles of Economics) has the highest undergraduate enrollment, with 559 undergraduates enrolled.
+
+```
+
+```{r}
+
+gov_50 <- en_fall_2020 %>%
+  group_by(course_title) %>%
+  summarise_each(funs(sum)) %>%
+  filter(course_title == "GOV 50")
+
+```
 
 ### Scene 2
 
